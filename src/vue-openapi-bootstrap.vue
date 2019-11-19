@@ -100,7 +100,7 @@
 			          <div v-if="method.requestBody">
 			            <h4>Request body<span v-if="method.requestBody.required" class="text-danger"><small>* required</small></span></h4>
 			            <p v-if="method.requestBody.description">{{ method.requestBody.description }}</p>
-			          	<pre v-if="method.requestBody.content['application/json']" class="text-white bg-dark"><code>
+			          	<pre v-if="method.requestBody.content && method.requestBody.content['application/json']" class="text-white bg-dark"><code>
 {{ renderSchemaReference(' ', method.requestBody.content['application/json'].schema) }}
 </code></pre>			            
 			          </div>
@@ -117,7 +117,7 @@
 			          	    <td>{{ responseName }}</td>
 			          	    <td>
 			          	    	<p>{{ response.description }}</p>
-			          	  		<pre v-if="response.content['application/json']" class="text-white bg-dark"><code>
+			          	  		<pre v-if="response.content && response.content['application/json']" class="text-white bg-dark"><code>
 {{ renderSchemaReference('   ', response.content['application/json'].schema) }}
 </code></pre>
 							<div v-if="response.headers">
@@ -192,6 +192,8 @@ export default {
         var propertyValue = model.properties[property]
         if (propertyValue.type === 'integer') {
           result += '0'
+        } else if (propertyValue.type === 'boolean') {
+          result += 'false'
         } else if (propertyValue.type === 'string') {
           if (propertyValue.example) {
             result += '"' + propertyValue.example + '"'
@@ -207,6 +209,8 @@ export default {
               result += intendation + '  "string"\n'
             } else if (propertyValue.items.type === 'integer') {
               result += intendation + '  0\n'
+            } else if (propertyValue.items.type === 'boolean') {
+              result += intendation + '  false\n'
             }
           } else if (propertyValue.items.$ref) {
             result += intendation + '  {\n'
