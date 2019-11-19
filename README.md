@@ -1,3 +1,28 @@
+## Screenshots
+
+![screen1](/doc/1.png?raw=true)
+![screen2](/doc/2.png?raw=true)
+
+## Usage
+
+```javascript
+<template>
+  <vue-openapi-bootstrap :openapi="openapi"></vue-openapi-bootstrap>
+</template>
+
+<script>
+import vueOpenapiBootstrap from 'vue-openapi-bootstrap/src/vue-openapi-bootstrap'
+export default {
+  components: {vueOpenapiBootstrap},
+  data () {
+    return {
+      openapi: {}
+    }
+  }
+}
+</script>
+```
+
 ## Build Setup
 
 ``` bash

@@ -158,11 +158,7 @@
 
 <script>
 export default {
-  data () {
-    return {
-      openapi: {}
-    }
-  },
+  props: ['openapi'],
   methods: {
     findModel (schemaName) {
       // '#/components/schemas/Pet'
