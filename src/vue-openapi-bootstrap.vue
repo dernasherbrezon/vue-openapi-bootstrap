@@ -9,18 +9,47 @@
        	{{ openapi.info.description }}
        </p>
        <ul class="list-unstyled">
-       	<li><a :href="openapi.info.termsOfService">Terms of service</a></li>
-       	<li><a :href="`mailto:${ openapi.info.contact.email }`">Contact the developer</a></li>
-       	<li><a :href="openapi.info.license.url">{{ openapi.info.license.name }}</a></li>
-       	<li><a :href="openapi.externalDocs.url">{{ openapi.externalDocs.description }}</a></li>
+       	<li v-if="openapi.info.termsOfService"><a :href="openapi.info.termsOfService">Terms of service</a></li>
+       	<li v-if="openapi.info.contact"><a :href="`mailto:${ openapi.info.contact.email }`">Contact the developer</a></li>
+       	<li v-if="openapi.info.license"><a :href="openapi.info.license.url">{{ openapi.info.license.name }}</a></li>
+       	<li v-if="openapi.externalDocs"><a :href="openapi.externalDocs.url">{{ openapi.externalDocs.description }}</a></li>
        </ul>
        <p>
          <form>
-           <div class="form-group">
-             <label for="servers">Servers</label>
-             <select class="form-control" id="servers">
-               <option v-for="server in openapi.servers">{{ server.url }}</option>
-             </select>
+           <div class="form-row">
+             <div class="form-group col-md-12">
+               <label for="servers">Servers</label>
+               <div class="row">
+                 <div class="col-md-6">
+                   <select class="form-control" id="servers">
+                     <option v-for="server in openapi.servers">{{ server.url }}</option>
+                   </select>
+                 </div>
+                 <div class="col-md-6" v-if="openapi.components.securitySchemes">
+                   <b-button  v-b-modal.modal-1 class="pull-right">Authentication</b-button>
+  				   <b-modal id="modal-1" ok-only title="Authentication">
+  				     <div v-for="(security, securityName) in openapi.components.securitySchemes">
+  				       <div v-if="security.type === 'apiKey'">
+    				     <h3>{{ securityName }}</h3>
+    				     <p class="text-muted">{{ security.type }}</p>
+    				     <p>
+    				     	Name: {{ security.name }}<br>
+    				     	In: {{ security.in }}
+    				     </p>
+    				   </div>
+  				       <div v-if="security.type === 'http' && security.scheme === 'bearer'">
+    				     <h3>{{ securityName }}</h3>
+    				     <p class="text-muted">{{ security.type }}, {{ security.scheme }}</p>
+    				     <p>
+    				     	In: header<br>
+    				     	Example: <code class="text-white bg-dark">Authorization: Bearer &lt;token&gt;</code>
+    				     </p>
+    				   </div>
+    				 </div>
+  				   </b-modal>                   
+                 </div>
+               </div>
+             </div>
            </div>
          </form>
        </p>
@@ -90,7 +119,26 @@
 			          	    	<p>{{ response.description }}</p>
 			          	  		<pre v-if="response.content['application/json']" class="text-white bg-dark"><code>
 {{ renderSchemaReference('   ', response.content['application/json'].schema) }}
-</code></pre>   	
+</code></pre>
+							<div v-if="response.headers">
+							  <h6>Headers</h6>
+							  <table class="table table-condensed table-hover table-sm">
+							  	<thead>
+							  	  <tr>
+							  	    <th scope="col" style="width: 20%">Name</th>
+							  	    <th scope="col">Description</th>
+							  	    <th scope="col">Type</th>
+							  	  </tr>
+							  	</thead>
+							  	<tbody>
+							  	  <tr v-for="(header, headerName) in response.headers">
+							  	    <td>{{ headerName }}</td>
+							  	    <td>{{ header.description }}</td>
+							  	    <td>{{ header.schema.type }}</td>
+							  	  </tr>
+							  	</tbody>
+							  </table>
+							</div>
 			          	    </td>
 			          	  </tr>
 			          	</tbody>
@@ -124,10 +172,14 @@ export default {
     },
     renderSchemaReference (intendation, schemaReference) {
       var result = ''
-      if (schemaReference.type && schemaReference.type === 'array') {
-        result += intendation + '[\n'
-        result += this.renderSchemaReference(intendation + '  ', schemaReference.items)
-        result += intendation + ']'
+      if (schemaReference.type) {
+        if (schemaReference.type === 'array') {
+          result += intendation + '[\n'
+          result += this.renderSchemaReference(intendation + '  ', schemaReference.items)
+          result += intendation + ']'
+        } else if (schemaReference.type === 'string') {
+          result += intendation + 'string\n'
+        }
       } else if (schemaReference.$ref) {
         result += intendation + '{\n'
         result += this.renderModel(intendation + '  ', schemaReference.$ref)
