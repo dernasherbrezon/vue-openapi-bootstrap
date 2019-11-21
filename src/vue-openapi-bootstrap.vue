@@ -4,7 +4,7 @@
     	OpenAPI schema is not supported: {{ openapi.openapi }}
     </div>
     <div class="col-md-12" v-else>
-       <h1>{{ openapi.info.title }}<span class="badge badge-secondary">{{ openapi.info.version }}</span></h1>
+       <h1>{{ openapi.info.title }}&nbsp<span class="badge badge-secondary">{{ openapi.info.version }}</span></h1>
        <p>
        	{{ openapi.info.description }}
        </p>
@@ -191,7 +191,11 @@ export default {
         result += intendation + '"' + property + '": '
         var propertyValue = model.properties[property]
         if (propertyValue.type === 'integer') {
-          result += '0'
+          if (propertyValue.example) {
+            result += propertyValue.example
+          } else {
+            result += '0'
+          }
         } else if (propertyValue.type === 'boolean') {
           result += 'false'
         } else if (propertyValue.type === 'string') {
@@ -202,6 +206,12 @@ export default {
           } else {
             result += '"string"'
           }
+        } else if (propertyValue.type === 'number') {
+          if (propertyValue.example) {
+            result += propertyValue.example
+          } else {
+            result += '0.0'
+          }
         } else if (propertyValue.type === 'array') {
           result += '[\n'
           if (propertyValue.items.type) {
@@ -209,6 +219,8 @@ export default {
               result += intendation + '  "string"\n'
             } else if (propertyValue.items.type === 'integer') {
               result += intendation + '  0\n'
+            } else if (propertyValue.items.type === 'number') {
+              result += intendation + '  0.0\n'
             } else if (propertyValue.items.type === 'boolean') {
               result += intendation + '  false\n'
             }
