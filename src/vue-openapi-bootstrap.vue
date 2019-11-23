@@ -66,7 +66,10 @@
 		       <div class="accordion" role="tablist">
 			    <b-card no-body class="mb-1" :key="index" v-for="(method, index) in getMethodsByTag(tag.name)">
 			      <b-card-header header-tag="header" class="mb-0" role="tab">
-			        <i class="fa fa-lock" v-if="method.security"></i>&nbsp;<span :class="`badge ${getColorByMethod(method)}`">{{ method.methodName.toUpperCase() }}</span> <b-button variant="link" href="#" v-b-toggle="`accordion${tag.name}${index}`"><del v-if="method.deprecated"><strong class="text-muted">{{ method.path }}</strong></del><strong v-else>{{ method.path }}</strong></b-button><span class="text-muted align-middle">{{ method.summary }}</span>
+			        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 8 8" v-if="method.security">
+					  <path d="M3 0c-1.1 0-2 .9-2 2v1h-1v4h6v-4h-1v-1c0-1.1-.9-2-2-2zm0 1c.56 0 1 .44 1 1v1h-2v-1c0-.56.44-1 1-1z" transform="translate(1)" />
+					</svg>
+			        &nbsp;<span :class="`badge ${getColorByMethod(method)}`">{{ method.methodName.toUpperCase() }}</span> <b-button variant="link" href="#" v-b-toggle="`accordion${tag.name}${index}`"><del v-if="method.deprecated"><strong class="text-muted">{{ method.path }}</strong></del><strong v-else>{{ method.path }}</strong></b-button><span class="text-muted align-middle">{{ method.summary }}</span>
 			      </b-card-header>
 			      <b-collapse :id="`accordion${tag.name}${index}`" :accordion="`accordion${tag.name}`" role="tabpanel">
 			        <b-card-body>

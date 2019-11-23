@@ -1,6 +1,6 @@
 {
   "name": "vue-openapi-bootstrap",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "OpenAPI viewer component for VueJS",
   "main": "dist/vue-openapi-bootstrap.umd.js",
   "module": "dist/vue-openapi-bootstrap.esm.js",
