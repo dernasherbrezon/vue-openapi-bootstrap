@@ -151,7 +151,24 @@
 	        </b-card-body>
 	      </b-collapse>
 	    </b-card>
-       </div>       
+       </div>
+       <hr/>       
+       <h2>Schemas</h2>
+       <br>
+       <div class="accordion" role="tablist">
+	    <b-card no-body class="mb-1" :key="schemaName" v-for="(schema, schemaName) in openapi.components.schemas">
+	      <b-card-header header-tag="header"  v-b-toggle="`accordionSchema${schemaName}`" class="mb-0" role="tab">
+	        <b-button variant="link" href="#"><strong>{{ schemaName }}</strong></b-button>
+	      </b-card-header>
+	      <b-collapse :id="`accordionSchema${schemaName}`" accordion="accordion" role="tabpanel">
+	        <b-card-body>
+              <pre class="text-white bg-dark"><code>
+{{ schema.properties }}
+              </code></pre>	        	
+			</b-card-body>
+		  </b-collapse>
+		</b-card>
+	   </div>
     </div>
   </div>
 </template>
